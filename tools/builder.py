@@ -414,8 +414,8 @@ if cmd == 'build' or cmd == 'build-test' or cmd == 'build-upload':
         output=archive_name,
         cwd=os.path.join(os.path.sep, 'tmp'),
     )
-    archive_sha256_sum = subprocess.check_output(
-        ['sha256sum', archive_path]).split()[0]
+    # archive_sha256_sum = subprocess.check_output(
+        # ['sha256sum', archive_path]).split()[0]
     os.remove(archive_path)
 
 
@@ -429,12 +429,12 @@ if cmd == 'build' or cmd == 'build-test' or cmd == 'build-upload':
                 pkgbuild_file.read(),
                 count=1,
             )
-            pkgbuild_data = re.sub(
-                '"[a-f0-9]{64}"',
-                '"%s"' % archive_sha256_sum.decode('utf-8'),
-                pkgbuild_data,
-                count=1,
-            )
+            # pkgbuild_data = re.sub(
+            #     '"[a-f0-9]{64}"',
+            #     '"%s"' % archive_sha256_sum.decode('utf-8'),
+            #     pkgbuild_data,
+            #     count=1,
+            # )
 
         with open(pkgbuild_path, 'w') as pkgbuild_file:
             pkgbuild_file.write(pkgbuild_data)
