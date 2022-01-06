@@ -220,7 +220,7 @@ var openMainWin = function() {
     }
 
     main = new BrowserWindow({
-      title: 'Pritunl',
+      title: 'BlizzardVPN',
       icon: icon,
       frame: true,
       autoHideMenuBar: true,
