@@ -129,11 +129,14 @@ with open(BUILD_KEYS_PATH, 'r') as build_keys_file:
     test_mirror_url = build_keys['test_mirror_url']
 
 def wget(url, cwd=None, output=None):
-    if output:
-        args = ['wget', '-O', output, url]
-    else:
-        args = ['wget', url]
-    subprocess.check_call(args, cwd=cwd)
+    # if output:
+    #     args = ['wget', '-O', output, url]
+    # else:
+    #     args = ['wget', url]
+    # command = ' '.join(args)
+    import wget
+    wget.download(url, out=output)
+    # subprocess.run(args, cwd=cwd, shell=True)
 
 def post_git_asset(release_id, file_name, file_path):
     for i in range(5):
@@ -406,17 +409,17 @@ if cmd == 'build' or cmd == 'build-test' or cmd == 'build-upload':
 
     # Get sha256 sum
     archive_name = '%s.tar.gz' % cur_version
-    archive_path = os.path.join(os.path.sep, 'tmp', archive_name)
+    archive_path = os.path.join(os.getcwd(), 'tmp', archive_name)
     if os.path.isfile(archive_path):
         os.remove(archive_path)
     wget('https://github.com/%s/%s/archive/%s' % (
         github_owner, REPO_NAME, archive_name),
-        output=archive_name,
-        cwd=os.path.join(os.path.sep, 'tmp'),
+        output=archive_path,
+        cwd=os.path.join(os.getcwd(), 'tmp'),
     )
-    archive_sha256_sum = subprocess.check_output(
-        ['sha256sum', archive_path]).split()[0]
-    os.remove(archive_path)
+    # archive_sha256_sum = subprocess.check_output(
+        # ['sha256sum', archive_path]).split()[0]
+    # os.remove(archive_path)
 
 
     for target in BUILD_TARGETS:
@@ -429,12 +432,12 @@ if cmd == 'build' or cmd == 'build-test' or cmd == 'build-upload':
                 pkgbuild_file.read(),
                 count=1,
             )
-            pkgbuild_data = re.sub(
-                '"[a-f0-9]{64}"',
-                '"%s"' % archive_sha256_sum.decode('utf-8'),
-                pkgbuild_data,
-                count=1,
-            )
+            # pkgbuild_data = re.sub(
+            #     '"[a-f0-9]{64}"',
+            #     '"%s"' % archive_sha256_sum.decode('utf-8'),
+            #     pkgbuild_data,
+            #     count=1,
+            # )
 
         with open(pkgbuild_path, 'w') as pkgbuild_file:
             pkgbuild_file.write(pkgbuild_data)
